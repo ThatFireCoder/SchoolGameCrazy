@@ -140,7 +140,7 @@ function updatePipes() {
             if (scoreDisplay) scoreDisplay.textContent = score;
         }
 
-        // FIXED ARRAY SPLICE BUG HERE:
+        // Fixed array splice crash
         if (pipes[i].x + PIPE_WIDTH < 0) {
             pipes.splice(i, 1);
         }
@@ -262,4 +262,12 @@ function gameLoop() {
     }
 }
 
-draw();
+// Initialized startup framework to render game objects instantly
+function initGame() {
+    gameState = GAME_STATES.IDLE;
+    bird.reset();
+    pipes.length = 0;
+    draw(); 
+}
+
+initGame();
