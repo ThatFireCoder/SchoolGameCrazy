@@ -1,0 +1,132 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.container {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    max-width: 400px;
+    width: 100%;
+}
+
+.game-header {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.game-header h1 {
+    color: #667eea;
+    font-size: 32px;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.score-display {
+    display: flex;
+    justify-content: space-around;
+    background: #f0f0f0;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.score-display p {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+#gameCanvas {
+    display: block;
+    background: linear-gradient(180deg, #87ceeb 0%, #e0f6ff 100%);
+    border: 3px solid #667eea;
+    border-radius: 8px;
+    margin: 0 auto;
+    width: 100%;
+    height: auto;
+}
+
+.game-info {
+    text-align: center;
+    margin-top: 15px;
+}
+
+#startBtn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-bottom: 10px;
+}
+
+#startBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+#startBtn:active {
+    transform: translateY(0);
+}
+
+.game-status {
+    font-size: 18px;
+    font-weight: bold;
+    color: #764ba2;
+    margin: 10px 0;
+    min-height: 24px;
+}
+
+.controls {
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+.controls p {
+    margin: 5px 0;
+}
+
+kbd {
+    background: #333;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 12px;
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
+    }
+
+    .game-header h1 {
+        font-size: 24px;
+    }
+
+    #gameCanvas {
+        margin-bottom: 10px;
+    }
+}
