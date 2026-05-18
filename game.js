@@ -29,7 +29,6 @@ const pipes = [];
 const PIPE_WIDTH = 50;
 const PIPE_GAP = 120;
 const PIPE_SPACING = 280;
-let lastPipeX = -100;
 
 // Game Variables
 let score = 0;
@@ -89,7 +88,6 @@ function startGame() {
     bird.reset();
     pipes.length = 0;
     score = 0;
-    lastPipeX = -100;
     
     const btn = document.getElementById('startBtn');
     if (btn) btn.textContent = 'RESTART';
@@ -99,8 +97,6 @@ function startGame() {
     
     const scoreDisplay = document.getElementById('score');
     if (scoreDisplay) scoreDisplay.textContent = score;
-    
-    gameLoop();
 }
 
 function createPipe() {
@@ -120,7 +116,7 @@ function updateBird() {
     bird.velocity += bird.gravity;
     bird.y += bird.velocity;
 
-    if (bird.y + bird.height > canvas.height) {
+    if (bird.y + bird.height > canvas.height - 20) {
         endGame();
     }
     if (bird.y < 0) {
@@ -247,8 +243,8 @@ function draw() {
     drawBird();
 }
 
+// Global animation execution loop sequence
 function gameLoop() {
-    // FIX: Only run physics calculations if the state is RUNNING
     if (gameState === GAME_STATES.RUNNING) {
         updateBird();
         updatePipes();
@@ -256,17 +252,9 @@ function gameLoop() {
     }
     
     draw();
-
-    if (gameState === GAME_STATES.RUNNING) {
-        requestAnimationFrame(gameLoop);
-    }
+    requestAnimationFrame(gameLoop); // Keep looping to handle frame animations smoothly
 }
 
-function initGame() {
-    gameState = GAME_STATES.IDLE;
-    bird.reset();
-    pipes.length = 0;
-    draw(); 
-}
-
-initGame();
+// Start rendering frames automatically on layout boot
+bird.reset();
+gameLoop();
