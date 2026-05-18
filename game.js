@@ -46,7 +46,7 @@ document.addEventListener('keydown', handleKeyPress);
 document.addEventListener('click', handleClick);
 canvas.addEventListener('click', handleClick);
 
-// Smart start listener that creates a button if your HTML is cached/missing it
+// Look for start button
 let startBtn = document.getElementById('startBtn');
 
 if (!startBtn) {
@@ -57,7 +57,7 @@ if (!startBtn) {
     canvas.parentNode.insertBefore(startBtn, canvas);
 }
 
-// Attach the click event to the button safely
+// Click event listener
 startBtn.addEventListener('click', function(event) {
     if (gameState !== GAME_STATES.RUNNING) {
         startGame();
@@ -140,7 +140,6 @@ function updatePipes() {
             if (scoreDisplay) scoreDisplay.textContent = score;
         }
 
-        // Fixed array splice crash
         if (pipes[i].x + PIPE_WIDTH < 0) {
             pipes.splice(i, 1);
         }
@@ -249,12 +248,9 @@ function draw() {
 }
 
 function gameLoop() {
-    if (gameState === GAME_STATES.RUNNING) {
-        updateBird();
-        updatePipes();
-        checkCollision();
-    }
-
+    updateBird();
+    updatePipes();
+    checkCollision();
     draw();
 
     if (gameState === GAME_STATES.RUNNING) {
@@ -262,7 +258,7 @@ function gameLoop() {
     }
 }
 
-// Initialized startup framework to render game objects instantly
+// Initial draw logic execution loop sequence
 function initGame() {
     gameState = GAME_STATES.IDLE;
     bird.reset();
