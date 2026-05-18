@@ -243,7 +243,6 @@ function draw() {
     drawBird();
 }
 
-// Global animation execution loop sequence
 function gameLoop() {
     if (gameState === GAME_STATES.RUNNING) {
         updateBird();
@@ -252,9 +251,11 @@ function gameLoop() {
     }
     
     draw();
-    requestAnimationFrame(gameLoop); // Keep looping to handle frame animations smoothly
+    requestAnimationFrame(gameLoop);
 }
 
-// Start rendering frames automatically on layout boot
-bird.reset();
-gameLoop();
+// FIXED: Force loop initialization ONLY when the window layout finishes loading completely
+window.onload = function() {
+    bird.reset();
+    gameLoop();
+};
