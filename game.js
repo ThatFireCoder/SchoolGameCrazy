@@ -57,7 +57,7 @@ if (!startBtn) {
     canvas.parentNode.insertBefore(startBtn, canvas);
 }
 
-// Click event listener
+// Click event listener for button
 startBtn.addEventListener('click', function(event) {
     if (gameState !== GAME_STATES.RUNNING) {
         startGame();
@@ -248,9 +248,13 @@ function draw() {
 }
 
 function gameLoop() {
-    updateBird();
-    updatePipes();
-    checkCollision();
+    // FIX: Only run physics calculations if the state is RUNNING
+    if (gameState === GAME_STATES.RUNNING) {
+        updateBird();
+        updatePipes();
+        checkCollision();
+    }
+    
     draw();
 
     if (gameState === GAME_STATES.RUNNING) {
@@ -258,7 +262,6 @@ function gameLoop() {
     }
 }
 
-// Initial draw logic execution loop sequence
 function initGame() {
     gameState = GAME_STATES.IDLE;
     bird.reset();
