@@ -11,11 +11,16 @@
     <h1>SchoolGameCrazy</h1>
     
     <div class="score-container">
-        Best Score: <span id="best-score">0</span>
+        <div>Current Score: <span id="score">0</span></div>
+        <div>Best Score: <span id="best-score">0</span></div>
+        <h2 id="gameStatus"></h2> 
     </div>
 
+    <button id="startBtn" style="padding: 10px 20px; font-size: 16px; margin-bottom: 10px; cursor: pointer;">START GAME</button>
+
+    <br>
     <canvas id="gameCanvas" width="400" height="600"></canvas>
 
-    <script src="game.js"></script>
+    <script src="game.js" defer></script>
 </body>
 </html>
