@@ -130,3 +130,21 @@ kbd {
         margin-bottom: 10px;
     }
 }
+/* Add this to the very bottom of your existing 160 lines */
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #1a1a1a; /* Feel free to change this background color */
+}
+
+#gameCanvas {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto; /* This prevents the browser from forcing it to stretch vertically */
+    box-sizing: border-box;
+}
