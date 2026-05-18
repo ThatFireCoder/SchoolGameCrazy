@@ -45,8 +45,20 @@ document.addEventListener('keydown', handleKeyPress);
 document.addEventListener('click', handleClick);
 canvas.addEventListener('click', handleClick);
 
-// Connect the HTML button to our game start logic
-document.getElementById('startBtn').addEventListener('click', function(event) {
+// Smart start listener that creates a button if your HTML is cached/missing it
+let startBtn = document.getElementById('startBtn');
+
+if (!startBtn) {
+    // Automatically build the missing button if the HTML hasn't updated yet
+    startBtn = document.createElement('button');
+    startBtn.id = 'startBtn';
+    startBtn.textContent = 'START GAME';
+    startBtn.style = "padding: 10px 20px; font-size: 16px; margin: 10px 0; cursor: pointer; display: block;";
+    canvas.parentNode.insertBefore(startBtn, canvas);
+}
+
+// Attach the click event to the button safely
+startBtn.addEventListener('click', function(event) {
     if (gameState !== GAME_STATES.RUNNING) {
         startGame();
     }
@@ -78,9 +90,17 @@ function startGame() {
     pipes.length = 0;
     score = 0;
     lastPipeX = -100;
-    document.getElementById('startBtn').textContent = 'RESTART';
-    document.getElementById('gameStatus').textContent = '';
-    document.getElementById('score').textContent = score;
+    
+    // Safely update DOM text elements if they exist
+    const btn = document.getElementById('startBtn');
+    if (btn) btn.textContent = 'RESTART';
+    
+    const status = document.getElementById('gameStatus');
+    if (status) status.textContent = '';
+    
+    const scoreDisplay = document.getElementById('score');
+    if (scoreDisplay) scoreDisplay.textContent = score;
+    
     gameLoop();
 }
 
@@ -121,7 +141,8 @@ function updatePipes() {
         if (!pipes[i].passed && pipes[i].x + PIPE_WIDTH < bird.x) {
             pipes[i].passed = true;
             score++;
-            document.getElementById('score').textContent = score;
+            const scoreDisplay = document.getElementById('score');
+            if (scoreDisplay) scoreDisplay.textContent = score;
         }
 
         // Remove off-screen pipes
@@ -161,14 +182,15 @@ function checkCollision() {
 
 function endGame() {
     gameState = GAME_STATES.GAME_OVER;
+    const status = document.getElementById('gameStatus');
     
     if (score > bestScore) {
         bestScore = score;
         localStorage.setItem('flappyBirdBestScore', bestScore);
         document.getElementById('best-score').textContent = bestScore;
-        document.getElementById('gameStatus').textContent = 'New Record! 🎉';
+        if (status) status.textContent = 'New Record! 🎉';
     } else {
-        document.getElementById('gameStatus').textContent = 'Game Over!';
+        if (status) status.textContent = 'Game Over!';
     }
 }
 
@@ -204,6 +226,7 @@ function drawBird() {
     ctx.fill();
 }
 
+// Draw function
 function drawPipes() {
     ctx.fillStyle = '#2ECC40';
     
