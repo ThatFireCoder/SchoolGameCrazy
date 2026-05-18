@@ -148,3 +148,22 @@ body {
     height: auto; /* This prevents the browser from forcing it to stretch vertically */
     box-sizing: border-box;
 }
+/* Add to the absolute bottom of style.css */
+
+body {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-height: 100vh !important;
+    margin: 0 !important;
+}
+
+#gameCanvas {
+    display: block !important;
+    margin: 0 auto !important;
+    max-width: 400px !important; /* Forces layout containment */
+    max-height: 600px !important; /* Holds arcade scale proportions */
+    width: 100% !important;
+    height: auto !important;
+}
+

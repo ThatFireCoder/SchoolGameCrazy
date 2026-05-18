@@ -37,8 +37,9 @@ let bestScore = localStorage.getItem('flappyBirdBestScore') || 0;
 let gameState = GAME_STATES.IDLE;
 let gameSpeed = 4;
 
-// Initialize best score display
-document.getElementById('best-score').textContent = bestScore;
+// Initialize best score display safely
+const bestScoreElem = document.getElementById('best-score');
+if (bestScoreElem) bestScoreElem.textContent = bestScore;
 
 // Event Listeners
 document.addEventListener('keydown', handleKeyPress);
@@ -49,11 +50,10 @@ canvas.addEventListener('click', handleClick);
 let startBtn = document.getElementById('startBtn');
 
 if (!startBtn) {
-    // Automatically build the missing button if the HTML hasn't updated yet
     startBtn = document.createElement('button');
     startBtn.id = 'startBtn';
     startBtn.textContent = 'START GAME';
-    startBtn.style = "padding: 10px 20px; font-size: 16px; margin: 10px 0; cursor: pointer; display: block;";
+    startBtn.style = "padding: 10px 20px; font-size: 16px; margin: 10px auto; cursor: pointer; display: block;";
     canvas.parentNode.insertBefore(startBtn, canvas);
 }
 
@@ -62,7 +62,7 @@ startBtn.addEventListener('click', function(event) {
     if (gameState !== GAME_STATES.RUNNING) {
         startGame();
     }
-    event.stopPropagation(); // Prevents clicking the button from triggering a canvas click
+    event.stopPropagation(); 
 });
 
 function handleKeyPress(event) {
@@ -91,7 +91,6 @@ function startGame() {
     score = 0;
     lastPipeX = -100;
     
-    // Safely update DOM text elements if they exist
     const btn = document.getElementById('startBtn');
     if (btn) btn.textContent = 'RESTART';
     
@@ -118,11 +117,9 @@ function createPipe() {
 }
 
 function updateBird() {
-    // Apply gravity
     bird.velocity += bird.gravity;
     bird.y += bird.velocity;
 
-    // Boundary detection (ceiling and floor)
     if (bird.y + bird.height > canvas.height) {
         endGame();
     }
@@ -133,11 +130,9 @@ function updateBird() {
 }
 
 function updatePipes() {
-    // Move pipes
     for (let i = pipes.length - 1; i >= 0; i--) {
         pipes[i].x -= gameSpeed;
 
-        // Check if pipe passed bird
         if (!pipes[i].passed && pipes[i].x + PIPE_WIDTH < bird.x) {
             pipes[i].passed = true;
             score++;
@@ -145,13 +140,12 @@ function updatePipes() {
             if (scoreDisplay) scoreDisplay.textContent = score;
         }
 
-        // Remove off-screen pipes
+        // FIXED ARRAY SPLICE BUG HERE:
         if (pipes[i].x + PIPE_WIDTH < 0) {
-            pipes[i].splice(i, 1);
+            pipes.splice(i, 1);
         }
     }
 
-    // Create new pipes - spawn infinitely
     if (pipes.length === 0 || pipes[pipes.length - 1].x < canvas.width - PIPE_SPACING) {
         createPipe();
     }
@@ -161,17 +155,14 @@ function checkCollision() {
     if (gameState !== GAME_STATES.RUNNING) return;
 
     for (let pipe of pipes) {
-        // Check if bird is horizontally aligned with pipe
         if (
             bird.x < pipe.x + PIPE_WIDTH &&
             bird.x + bird.width > pipe.x
         ) {
-            // Check collision with top pipe
             if (bird.y < pipe.topHeight) {
                 endGame();
                 return;
             }
-            // Check collision with bottom pipe
             if (bird.y + bird.height > pipe.bottomY) {
                 endGame();
                 return;
@@ -187,7 +178,8 @@ function endGame() {
     if (score > bestScore) {
         bestScore = score;
         localStorage.setItem('flappyBirdBestScore', bestScore);
-        document.getElementById('best-score').textContent = bestScore;
+        const bestScoreElem = document.getElementById('best-score');
+        if (bestScoreElem) bestScoreElem.textContent = bestScore;
         if (status) status.textContent = 'New Record! 🎉';
     } else {
         if (status) status.textContent = 'Game Over!';
@@ -195,7 +187,6 @@ function endGame() {
 }
 
 function drawBird() {
-    // Bird body (yellow circle)
     ctx.fillStyle = '#FFD700';
     ctx.beginPath();
     ctx.arc(bird.x + bird.width / 2, bird.y + bird.height / 2, bird.width / 2, 0, Math.PI * 2);
@@ -204,19 +195,16 @@ function drawBird() {
     ctx.lineWidth = 2;
     ctx.stroke();
 
-    // Bird eye
     ctx.fillStyle = 'white';
     ctx.beginPath();
     ctx.arc(bird.x + bird.width / 2 + 8, bird.y + bird.height / 2 - 5, 4, 0, Math.PI * 2);
     ctx.fill();
 
-    // Bird pupil
     ctx.fillStyle = 'black';
     ctx.beginPath();
     ctx.arc(bird.x + bird.width / 2 + 8, bird.y + bird.height / 2 - 5, 2, 0, Math.PI * 2);
     ctx.fill();
 
-    // Bird beak
     ctx.fillStyle = '#FF6347';
     ctx.beginPath();
     ctx.moveTo(bird.x + bird.width / 2 + 10, bird.y + bird.height / 2);
@@ -226,46 +214,36 @@ function drawBird() {
     ctx.fill();
 }
 
-// Draw function
 function drawPipes() {
     ctx.fillStyle = '#2ECC40';
     
     for (let pipe of pipes) {
-        // Top pipe
         ctx.fillRect(pipe.x, 0, PIPE_WIDTH, pipe.topHeight);
         
-        // Top pipe cap
         ctx.fillStyle = '#27AE60';
         ctx.fillRect(pipe.x - 2, pipe.topHeight - 15, PIPE_WIDTH + 4, 15);
-        
-        // Bottom pipe cap
         ctx.fillRect(pipe.x - 2, pipe.bottomY, PIPE_WIDTH + 4, 15);
         
-        // Bottom pipe
         ctx.fillStyle = '#2ECC40';
         ctx.fillRect(pipe.x, pipe.bottomY + 15, PIPE_WIDTH, canvas.height - pipe.bottomY - 15);
     }
 }
 
 function draw() {
-    // Clear canvas with sky gradient
     const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
     gradient.addColorStop(0, '#87CEEB');
     gradient.addColorStop(1, '#E0F6FF');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw ground
     ctx.fillStyle = '#8B7355';
     ctx.fillRect(0, canvas.height - 20, canvas.width, 20);
     
-    // Draw grass pattern
     ctx.fillStyle = '#228B22';
     for (let i = 0; i < canvas.width; i += 20) {
         ctx.fillRect(i, canvas.height - 20, 10, 20);
     }
 
-    // Draw game objects
     drawPipes();
     drawBird();
 }
@@ -284,5 +262,4 @@ function gameLoop() {
     }
 }
 
-// Initial draw to render the starting view
 draw();
