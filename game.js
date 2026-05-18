@@ -1,4 +1,3 @@
-// Game Variables
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -46,15 +45,29 @@ document.addEventListener('keydown', handleKeyPress);
 document.addEventListener('click', handleClick);
 canvas.addEventListener('click', handleClick);
 
+// Connect the HTML button to our game start logic
+document.getElementById('startBtn').addEventListener('click', function(event) {
+    if (gameState !== GAME_STATES.RUNNING) {
+        startGame();
+    }
+    event.stopPropagation(); // Prevents clicking the button from triggering a canvas click
+});
+
 function handleKeyPress(event) {
-    if (event.code === 'Space' && gameState === GAME_STATES.RUNNING) {
-        bird.velocity = bird.flapPower;
+    if (event.code === 'Space') {
+        if (gameState === GAME_STATES.IDLE || gameState === GAME_STATES.GAME_OVER) {
+            startGame();
+        } else if (gameState === GAME_STATES.RUNNING) {
+            bird.velocity = bird.flapPower;
+        }
         event.preventDefault();
     }
 }
 
 function handleClick(event) {
-    if (gameState === GAME_STATES.RUNNING) {
+    if (gameState === GAME_STATES.IDLE || gameState === GAME_STATES.GAME_OVER) {
+        startGame();
+    } else if (gameState === GAME_STATES.RUNNING) {
         bird.velocity = bird.flapPower;
     }
 }
@@ -113,7 +126,7 @@ function updatePipes() {
 
         // Remove off-screen pipes
         if (pipes[i].x + PIPE_WIDTH < 0) {
-            pipes.splice(i, 1);
+            pipes[i].splice(i, 1);
         }
     }
 
@@ -248,5 +261,5 @@ function gameLoop() {
     }
 }
 
-// Initial draw
+// Initial draw to render the starting view
 draw();
